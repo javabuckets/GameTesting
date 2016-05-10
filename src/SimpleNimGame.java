@@ -6,17 +6,24 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class SimpleNimGame 
 {
 	private static final int WIDTH = 1920, HEIGHT = 1080;
 
+	static GameUtil gameUtil = new GameUtil();
+	
+	static ArrayList<Integer> ballsA = new ArrayList<Integer>();
+	static ArrayList<Integer> ballsB = new ArrayList<Integer>();
+	static ArrayList<Integer> ballsC = new ArrayList<Integer>();
+	
 	public static void main(String[] args) 
 	{
 		SimpleNimGame instance = new SimpleNimGame();
@@ -51,11 +58,52 @@ public class SimpleNimGame
 		Graphics g = null;
 		Graphics2D g2d = null;
 		
+		// Initializing Game Objects
+		for (int i = 0; i < 5; i++)
+		{
+			ballsA.add(1);
+			ballsB.add(1);
+			ballsC.add(1);
+		}
+		
+		frame.addKeyListener( new KeyAdapter() {
+
+			public void keyPressed( KeyEvent e ) {
+
+				if( e.getKeyCode() == KeyEvent.VK_A )
+					ballsA.remove(0);
+				if( e.getKeyCode() == KeyEvent.VK_B )
+					ballsB.remove(0);
+				if( e.getKeyCode() == KeyEvent.VK_C )
+					ballsC.remove(0);
+
+			}
+
+		});
+		
+		canvas.addKeyListener( new KeyAdapter() {
+
+			public void keyPressed( KeyEvent e ) {
+
+				if( e.getKeyCode() == KeyEvent.VK_A )
+					ballsA.remove(0);
+				if( e.getKeyCode() == KeyEvent.VK_B )
+					ballsB.remove(0);
+				if( e.getKeyCode() == KeyEvent.VK_C )
+					ballsC.remove(0);
+
+			}
+
+		});
+		
 		// Infinite While loop
 		while(true)
 		{
 			try
 			{
+				// Key Handler
+				//KeyBindings kb = new KeyBindings();
+				
 				// Count the FPS.
 				instance.countFPS();
 
@@ -66,7 +114,26 @@ public class SimpleNimGame
 				
 				// Render Start
 				
+				for (int i = 0; i < ballsA.size(); i++)
+				{
+					g2d.drawImage(gameUtil.loadImage("./images/nim/NimBall.png"), 55*(i+1)+50, 50, 50, 50, null);
+				}
 				
+				for (int i = 0; i < ballsB.size(); i++)
+				{
+					g2d.drawImage(gameUtil.loadImage("./images/nim/NimBall.png"), 55*(i+1)+50, 125, 50, 50, null);
+				}
+				
+				for (int i = 0; i < ballsC.size(); i++)
+				{
+					g2d.drawImage(gameUtil.loadImage("./images/nim/NimBall.png"), 55*(i+1)+50, 200, 50, 50, null);
+				}
+				
+				g2d.setColor(Color.black);
+				g2d.setFont(new Font(Font.SERIF, Font.BOLD, 28));
+				g2d.drawString("A", 50, 75+7);
+				g2d.drawString("B", 50, 150+7);
+				g2d.drawString("C", 50, 225+7);
 				
 				instance.renderFPS(g2d);
 				
@@ -93,6 +160,8 @@ public class SimpleNimGame
 		}
 	}
 
+	
+	
 	// Variables for counting frames per seconds
 	int fps = 0;
 	int frames = 0;
